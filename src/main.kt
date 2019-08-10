@@ -10,6 +10,12 @@ fun main() {
 
 //    HelloWorld().coroutineRunBlocking()
 
+//    HelloWorld().coroutinesSynchronize()
+
+//    HelloWorld().structoreConcurrency()
+
+//    HelloWorld().coroutinesScopeBuilder()
+
 //    HelloWorld().extractFunctionRefactoring()
 
 //    HelloWorld().printTenThousandsDots()

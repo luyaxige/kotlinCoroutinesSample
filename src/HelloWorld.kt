@@ -1,7 +1,4 @@
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -48,6 +45,63 @@ class HelloWorld {
         }
     }
 
+    /**
+     * use non-blocking mothod finishing coroutines (delay and print World)
+     * runBlocking<Unit> { ... } works as an adaptor that is used to start the top-level main coroutine.
+     * We explicitly specify its Unit return type
+     * because a well-formed main function in Kotlin has to return <Unit>
+     */
+    fun coroutinesSynchronize() = runBlocking<Unit> {
+        val job = GlobalScope.launch {
+            // 启动一个新协程并保持对这个作业的引用
+            delay(1000L)
+            println("${time.format(Date())}  World!")
+        }
+        println("${time.format(Date())}  Hello,")
+        job.join() // 等待直到子协程执行结束
+    }
+
+    /**
+     *  turn the function into a coroutine using runBlocking coroutine builder.
+     *  Every coroutine builder, including runBlocking, adds an instance of <CoroutineScope> to the scope of its code block.
+     *  We can launch coroutines in this scope without having to join them explicitly,
+     *  because an outer coroutine (runBlocking in our example) does not complete
+     *  until all the coroutines launched in its scope complete.
+     * */
+    fun structoreConcurrency() = runBlocking {
+        launch {
+            // launch a new coroutine in the scope of runBlocking
+            delay(1000L)
+            println("${time.format(Date())}  World!")
+        }
+        println("${time.format(Date())}  Hello,")
+    }
+
+    /**
+     * declare our own scope using coroutineScope builder
+     * create a <CoroutineScope> and does not complete until all launched children complete
+     * <CoroutineScope> is non-blocking, (<runBlocking> is a blocks method)
+     * <CoroutineScope> does not block the current thread while waiting for all children to complete
+     * */
+    fun coroutinesScopeBuilder() = runBlocking {
+        launch {
+            delay(200L)
+            println("${time.format(Date())}  Task from runBlocking")
+        }
+
+        coroutineScope { // Creates a coroutine scope
+            launch {
+                delay(500L)
+                println("${time.format(Date())}  Task from nested launch")
+            }
+
+            delay(100L)
+            println("${time.format(Date())}  Task from coroutine scope") // This line will be printed before the nested launch
+        }
+
+        println("${time.format(Date())}  Coroutine scope is over") // This line is not printed until the nested launch completes
+    }
+
     fun extractFunctionRefactoring() = runBlocking {
         launch { doWorld() }
         println("${time.format(Date())}  Hello,")
@@ -65,7 +119,8 @@ class HelloWorld {
      * print 100K dot in a second with coroutine
      */
     fun printTenThousandsDots() = runBlocking {
-        repeat(100_000) { // launch a lot of coroutines
+        repeat(100_000) {
+            // launch a lot of coroutines
             launch {
                 delay(1000L)
                 print(".")
