@@ -3,23 +3,14 @@ import java.text.SimpleDateFormat
 val time = SimpleDateFormat("hh:MM:ss")
 
 fun main() {
+    /**
+     * Basic
+     * */
+    HelloWorld.run()
 
-//    HelloWorld().coroutineStart()
+    /**
+     * Context and Dispatchers
+     * */
 
-//    HelloWorld().threadStart()
-
-//    HelloWorld().coroutineRunBlocking()
-
-//    HelloWorld().coroutinesSynchronize()
-
-//    HelloWorld().structoreConcurrency()
-
-//    HelloWorld().coroutinesScopeBuilder()
-
-//    HelloWorld().extractFunctionRefactoring()
-
-//    HelloWorld().printTenThousandsDots()
-
-//    HelloWorld().asDaemonThread()
 
 }
