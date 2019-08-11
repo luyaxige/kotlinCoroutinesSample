@@ -2,6 +2,13 @@
 [TOC]
 
 ## Basic
+- android中引入协程的方法
+```
+dependency{
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+}
+```
 ### Definition
 #### 线程和协程的区别(Blocking VS Suspending)
 > 协程是通过**编译技术**来实现的（不需要虚拟机VM/操作系统OS的支持），通过**插入相关代码**来生效
