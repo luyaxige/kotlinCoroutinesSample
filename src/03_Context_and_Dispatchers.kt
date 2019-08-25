@@ -160,6 +160,11 @@ class Context_and_Dispatchers {
         println("${time.format(Date())}  main: Who has survived request cancellation?")
     }
 
+    /**
+     * A parent coroutine always waits for completion of all its children
+     * doesn't have to explicitly track all the children it launches
+     * doesn't have to use Job.join to wait for them at the end
+     * */
     private fun parentalCoroutines() = runBlocking {
         // launch a coroutine to process some kind of incoming request
         val request = launch {
@@ -192,6 +197,9 @@ class Context_and_Dispatchers {
         log("${time.format(Date())}  The answer for v1 / v2 = ${v1.await() / v2.await()}")
     }
 
+    /**
+     * can launch a coroutine with an explicitly specified dispatcher and an explicitly specified name at the same time
+     * */
     private fun combiningContextElements() = runBlocking {
         launch(Dispatchers.Default + CoroutineName("test")) {
             println("${time.format(Date())}  I'm working in thread ${Thread.currentThread().name}")
