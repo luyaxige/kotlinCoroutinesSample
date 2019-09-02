@@ -35,7 +35,7 @@ dependency{
 
 #### Suspending Functions
 - `launch`
-    launch函数是最常用的协程构建器，它不阻塞当前线程，而是在后台创建一个新协程。也可以对其指定协程调度器。
+    launch函数是最常用的协程构建器
 - `delay`
     delay与线程的sleep有异曲同工之处：都是休息一段时间。不过两者还是有点区别的，sleep是线程进入了等待环节，而delay则是执行流进入了等待环节，因此delay不会像sleep一样阻塞其他线程的执行, 但只能在协程中被调用，用于暂停协程
 - `suspend`
@@ -43,9 +43,11 @@ dependency{
 
 #### Coroutines Builder
 - `launch`
-    最简单常用的协程构造方式，不会阻塞当前线程
+    最简单常用的协程构造方式，不会阻塞当前线程，它不阻塞当前线程，而是在后台创建一个新协程。也可以对其指定协程调度器。
 - `runBlocking`
     这个协程构造器会阻塞当前线程，直到协程内的所有任务执行完毕。
+- `withContext`
+    这个构造器不会创建新的协程，在指定协程上运行挂起代码块，并挂起该协程直至代码块运行完成。
 - `async` 
     - 如`launch`，async也是创建协程并立即启动，但是`launch`是带协程执行结果的启动方式,其返回值类型是`Job`，无法携带返回值
     - 而`async`的返回值类型是`Deferred`，是`Job`的子类，通过调用`Deferred`里的`await`函数，可以得到协程的返回值,关于`Deferred`后续会详细说明
@@ -69,6 +71,33 @@ dependency{
 ## Channels
 ## Composing Suspending Functions
 ## Coroutines Context and Dispatchers
+CoroutineDispatcher，协程调度器，决定协程所在的线程或线程池。它可以指定协程运行于特定的一个线程、一个线程池或者不指定任何线程（这样协程就会运行于当前线程）。coroutines-core中 CoroutineDispatcher 有两种标准实现 CommonPool 和 Unconfined，Unconfined 就是不指定线程。
+launch函数定义中的DefaultDispatcher实际上就是CommonPool，CommonPool是一个协程调度器，其指定的线程为共有的线程池。而且 CoroutineDispatcher 实现了 CoroutineContext 接口，所以才能直接指定context: CoroutineContext = DefaultDispatcher，实际上，协程上下文中的元素都实现了 CoroutineContext 接口。
+### Unconfined and confined Dispatchers
+The unconfined dispatcher is an advanced mechanism that can be helpful in certain corner cases where dispatching of a coroutine for its execution later is not needed or produces undesirable side-effects, because some operation in a coroutine must be performed right away. The unconfined dispatcher should not be used in general code
+### Jumping Between Threads
+```
+newSingleThreadContext("Ctx1").use { ctx1 ->
+    newSingleThreadContext("Ctx2").use { ctx2 ->
+        runBlocking(ctx1) {
+            log("${time.format(Date())}  Started in ctx1")
+            val result = withContext(ctx2) {
+                log("${time.format(Date())}  Working in ctx2")
+                delay(1000)
+                "ctx2 finished"
+            }
+            log("${time.format(Date())}  Back to ctx1: $result")
+        }
+    }
+}
+```
+`newSingleThreadContext`,实际上是创建了一个ThreadPoolDispatcher(同时继承与CoroutineContext)。使用`newSingleThreadContext`会创建一个线程池，需要调用close方法。use的作用就是这样，他是一个辅助方法，和协程并不相关，所有继承与closeable的对象都能调用该方法。表示使用完之后自动close掉。是个实用的辅助方法。
+
+所以，本例两个`newSingleThreadContext`相当于创建了两个ThreadPoolDispatcher对象，分别是'ctx1','ctx2'。`runBlocking`创建一个协程，并且使用'ctx1'。
+
+关键知识点在于，在协程中，可以通过调用`withContext`来进行`CoroutineContext`的切换（同时也会切换Dispatcher）。
+
+注意，`withContext`会阻塞协程，等到block中的内容运行完成之后返回，可以有返回值。
 ## Exception Handling
 
 # REFERENCE
