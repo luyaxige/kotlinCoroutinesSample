@@ -3,8 +3,11 @@ import kotlin.system.measureTimeMillis
 
 class Composing_Suspnding_Functions {
 
+    val print = printer()
+
     companion object {
         fun run() {
+            Context_and_Dispatchers().print.c { "********************" }
             Composing_Suspnding_Functions().sequentialDefault()
             Composing_Suspnding_Functions().concurrentUseAsync()
             Composing_Suspnding_Functions().lazyStartAsync()
@@ -91,8 +94,8 @@ class Composing_Suspnding_Functions {
     fun cancellation() = runBlocking<Unit> {
         try {
             failedConcurrentSum()
-        } catch(e: ArithmeticException) {
-            println("Computation failed with ArithmeticException")
+        } catch (e: ArithmeticException) {
+            print.t { "Computation failed with ArithmeticException" }
         }
     }
 
@@ -102,11 +105,11 @@ class Composing_Suspnding_Functions {
                 delay(Long.MAX_VALUE) // Emulates very long computation
                 42
             } finally {
-                println("First child was cancelled")
+                print.t { "First child was cancelled" }
             }
         }
         val two = async<Int> {
-            println("Second child throws an exception")
+            print.t { "Second child throws an exception" }
             throw ArithmeticException()
         }
         one.await() + two.await()

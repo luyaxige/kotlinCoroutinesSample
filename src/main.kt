@@ -6,12 +6,12 @@ fun main() {
     /**
      * Coroutines Basic
      * */
-//    HelloWorld.run()
+    HelloWorld.run()
 
     /**
      * Coroutines Context and Dispatchers
      * */
-//    Context_and_Dispatchers.run()
+    Context_and_Dispatchers.run()
 
     /**
      * Composing Suspending Functions
