@@ -25,19 +25,22 @@ val threadLocal = ThreadLocal<String?>() // declare thread-local variable
 
 class Context_and_Dispatchers {
 
+    val print = printer()
+
     companion object {
         fun run() {
-//            Context_and_Dispatchers().CoroutinesDispatcherAndThread()
-//            Context_and_Dispatchers().dispatcherCompare()
-//            Context_and_Dispatchers().debugCoroutinesAndThreads()
-//            Context_and_Dispatchers().jumpingBetweenThreads()
-//            Context_and_Dispatchers().contextJob()
-//            Context_and_Dispatchers().childrenCoroutine()
-//            Context_and_Dispatchers().parentalCoroutines()
-//            Context_and_Dispatchers().nameCoroutinesForDebugging()
-//            Context_and_Dispatchers().combiningContextElements()
-//            Context_and_Dispatchers().startCoroutineScope()
-//            Context_and_Dispatchers().threadLocalData()
+            Context_and_Dispatchers().print.c { "********************" }
+            Context_and_Dispatchers().CoroutinesDispatcherAndThread()
+            Context_and_Dispatchers().dispatcherCompare()
+            Context_and_Dispatchers().debugCoroutinesAndThreads()
+            Context_and_Dispatchers().jumpingBetweenThreads()
+            Context_and_Dispatchers().contextJob()
+            Context_and_Dispatchers().childrenCoroutine()
+            Context_and_Dispatchers().parentalCoroutines()
+            Context_and_Dispatchers().nameCoroutinesForDebugging()
+            Context_and_Dispatchers().combiningContextElements()
+            Context_and_Dispatchers().startCoroutineScope()
+            Context_and_Dispatchers().threadLocalData()
         }
     }
 
@@ -49,7 +52,7 @@ class Context_and_Dispatchers {
          * */
         launch {
             // context of the parent, main runBlocking coroutine
-            println("${time.format(Date())}  main runBlocking      : I'm working in thread ${Thread.currentThread().name}")
+            print.t { "main runBlocking      : I'm working in thread ${Thread.currentThread().name}" }
         }
 
         /**
@@ -58,7 +61,7 @@ class Context_and_Dispatchers {
          * */
         launch(Dispatchers.Unconfined) {
             // not confined -- will work with main thread
-            println("${time.format(Date())}  Unconfined            : I'm working in thread ${Thread.currentThread().name}")
+            print.t { "Unconfined            : I'm working in thread ${Thread.currentThread().name}" }
         }
 
         /**
@@ -69,7 +72,7 @@ class Context_and_Dispatchers {
          * */
         launch(Dispatchers.Default) {
             // will get dispatched to DefaultDispatcher
-            println("${time.format(Date())}  Default               : I'm working in thread ${Thread.currentThread().name}")
+            print.t { "Default               : I'm working in thread ${Thread.currentThread().name}" }
         }
 
         /**
@@ -77,22 +80,22 @@ class Context_and_Dispatchers {
          * */
         launch(newSingleThreadContext("MyOwnThread")) {
             // will get its own new thread
-            println("${time.format(Date())}  newSingleThreadContext: I'm working in thread ${Thread.currentThread().name}")
+            print.t { "newSingleThreadContext: I'm working in thread ${Thread.currentThread().name}" }
         }
     }
 
     private fun dispatcherCompare() = runBlocking {
         launch(Dispatchers.Unconfined) {
             // not confined -- will work with main thread
-            println("${time.format(Date())}  Unconfined      : I'm working in thread ${Thread.currentThread().name}")
+            print.t { "Unconfined      : I'm working in thread ${Thread.currentThread().name}" }
             delay(1000)
-            println("${time.format(Date())}  Unconfined      : After delay in thread ${Thread.currentThread().name}")
+            print.t { "Unconfined      : After delay in thread ${Thread.currentThread().name}" }
         }
         launch {
             // context of the parent, main runBlocking coroutine
-            println("${time.format(Date())}  main runBlocking: I'm working in thread ${Thread.currentThread().name}")
+            print.t { "main runBlocking: I'm working in thread ${Thread.currentThread().name}" }
             delay(2000)
-            println("${time.format(Date())}  main runBlocking: After delay in thread ${Thread.currentThread().name}")
+            print.t { "main runBlocking: After delay in thread ${Thread.currentThread().name}" }
         }
     }
 
@@ -134,7 +137,7 @@ class Context_and_Dispatchers {
     }
 
     private fun contextJob() = runBlocking {
-        println("${time.format(Date())}  My job is ${coroutineContext[Job]}")
+        print.t { "My job is ${coroutineContext[Job]}" }
     }
 
     private fun childrenCoroutine() = runBlocking {
@@ -142,22 +145,22 @@ class Context_and_Dispatchers {
         val request = launch {
             // it spawns two other jobs, one with GlobalScope
             GlobalScope.launch {
-                println("${time.format(Date())}  job1: I run in GlobalScope and execute independently!")
+                print.t { "job1: I run in GlobalScope and execute independently!" }
                 delay(1000)
-                println("${time.format(Date())}  job1: I am not affected by cancellation of the request")
+                print.t { "job1: I am not affected by cancellation of the request" }
             }
             // and the other inherits the parent context
             launch {
                 delay(100)
-                println("${time.format(Date())}  job2: I am a child of the request coroutine")
+                print.t { "job2: I am a child of the request coroutine" }
                 delay(1000)
-                println("${time.format(Date())}  job2: I will not execute this line if my parent request is cancelled")
+                print.t { "job2: I will not execute this line if my parent request is cancelled" }
             }
         }
         delay(500)
         request.cancel() // cancel processing of the request
         delay(1000) // delay a second to see what happens
-        println("${time.format(Date())}  main: Who has survived request cancellation?")
+        print.t { "main: Who has survived request cancellation?" }
     }
 
     /**
@@ -172,13 +175,13 @@ class Context_and_Dispatchers {
                 // launch a few children jobs
                 launch {
                     delay((i + 1) * 200L) // variable delay 200ms, 400ms, 600ms
-                    println("${time.format(Date())}  Coroutine $i is done")
+                    print.t { "Coroutine $i is done" }
                 }
             }
-            println("${time.format(Date())}  request: I'm done and I don't explicitly join my children that are still active")
+            print.t { "request: I'm done and I don't explicitly join my children that are still active" }
         }
         request.join() // wait for completion of the request, including all its children
-        println("${time.format(Date())}  Now processing of the request is complete")
+        print.t { "Now processing of the request is complete" }
     }
 
     private fun nameCoroutinesForDebugging() = runBlocking {
@@ -202,30 +205,30 @@ class Context_and_Dispatchers {
      * */
     private fun combiningContextElements() = runBlocking {
         launch(Dispatchers.Default + CoroutineName("test")) {
-            println("${time.format(Date())}  I'm working in thread ${Thread.currentThread().name}")
+            print.t { "I'm working in thread ${Thread.currentThread().name}" }
         }
     }
 
     fun startCoroutineScope() = runBlocking {
         val activity = Activity()
         activity.doSomething() // run test function
-        println("${time.format(Date())}  Launched coroutines")
+        print.t { "Launched coroutines" }
         delay(500L) // delay for half a second
-        println("${time.format(Date())}  Destroying activity!")
+        print.t { "Destroying activity!" }
         activity.destroy() // cancels all coroutines
         delay(1000) // visually confirm that they don't work
     }
 
     fun threadLocalData() = runBlocking<Unit> {
         threadLocal.set("${time.format(Date())}  main")
-        println("${time.format(Date())}  Pre-main, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'")
+        print.t { "Pre-main, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'" }
         val job = launch(Dispatchers.Default + threadLocal.asContextElement(value = "launch")) {
-            println("${time.format(Date())}  Launch start, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'")
+            print.t { "Launch start, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'" }
             yield()
-            println("${time.format(Date())}  After yield, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'")
+            print.t { "After yield, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'" }
         }
         job.join()
-        println("${time.format(Date())}  Post-main, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'")
+        print.t { "Post-main, current thread: ${Thread.currentThread()}, thread local value: '${threadLocal.get()}'" }
     }
 
 }
