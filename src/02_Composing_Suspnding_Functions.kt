@@ -1,29 +1,39 @@
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
-class Composing_Suspnding_Functions {
+class ComposingSuspndingFunctions {
 
     val print = printer()
 
     companion object {
         fun run() {
-            Context_and_Dispatchers().print.c { "********************" }
-            Composing_Suspnding_Functions().sequentialDefault()
-            Composing_Suspnding_Functions().concurrentUseAsync()
-            Composing_Suspnding_Functions().lazyStartAsync()
-            Composing_Suspnding_Functions().asyncStyleFunctions()
-            Composing_Suspnding_Functions().structureConcurrencyWithAsync()
-            Composing_Suspnding_Functions().cancellation()
+            ContextAndDispatchers().print.c { "********************" }
+            ComposingSuspndingFunctions().sequentialDefault()
+
+            println("******************************")
+            ComposingSuspndingFunctions().concurrentUseAsync()
+
+            println("******************************")
+            ComposingSuspndingFunctions().lazyStartAsync()
+
+            println("******************************")
+            ComposingSuspndingFunctions().asyncStyleFunctions()
+
+            println("******************************")
+            ComposingSuspndingFunctions().structureConcurrencyWithAsync()
+
+            println("******************************")
+            ComposingSuspndingFunctions().cancellation()
         }
 
     }
 
-    suspend fun doSomethingUsefulOne(): Int {
+    private suspend fun doSomethingUsefulOne(): Int {
         delay(1000L) // pretend we are doing something useful here
         return 13
     }
 
-    suspend fun doSomethingUsefulTwo(): Int {
+    private suspend fun doSomethingUsefulTwo(): Int {
         delay(1000L) // pretend we are doing something useful here, too
         return 29
     }
@@ -58,12 +68,12 @@ class Composing_Suspnding_Functions {
     }
 
     // The result type of somethingUsefulOneAsync is Deferred<Int>
-    fun somethingUsefulOneAsync() = GlobalScope.async {
+    private fun somethingUsefulOneAsync() = GlobalScope.async {
         doSomethingUsefulOne()
     }
 
     // The result type of somethingUsefulTwoAsync is Deferred<Int>
-    fun somethingUsefulTwoAsync() = GlobalScope.async {
+    private fun somethingUsefulTwoAsync() = GlobalScope.async {
         doSomethingUsefulTwo()
     }
 
@@ -99,7 +109,7 @@ class Composing_Suspnding_Functions {
         }
     }
 
-    suspend fun failedConcurrentSum(): Int = coroutineScope {
+    private suspend fun failedConcurrentSum(): Int = coroutineScope {
         val one = async<Int> {
             try {
                 delay(Long.MAX_VALUE) // Emulates very long computation
