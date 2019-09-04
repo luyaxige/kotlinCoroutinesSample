@@ -10,13 +10,29 @@ class HelloWorld {
         fun run() {
             HelloWorld().print.c { "********************" }
             HelloWorld().coroutineStart()
+
+            println("******************************")
             HelloWorld().threadStart()
+
+            println("******************************")
             HelloWorld().coroutineRunBlocking()
+
+            println("******************************")
             HelloWorld().coroutinesSynchronize()
+
+            println("******************************")
             HelloWorld().structoreConcurrency()
+
+            println("******************************")
             HelloWorld().coroutinesScopeBuilder()
+
+            println("******************************")
             HelloWorld().extractfunctionRefactoring()
+
+            println("******************************")
             HelloWorld().printTenThousandsDots()
+
+            println("******************************")
             HelloWorld().asDaemonThread()
         }
     }
@@ -127,7 +143,7 @@ class HelloWorld {
     /**
      * this is a suspend private function, can only run in coroutine
      */
-    suspend private fun doWorld() {
+    private suspend fun doWorld() {
         delay(1000L)
         print.t { "World!" }
     }

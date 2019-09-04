@@ -23,28 +23,48 @@ class Activity : CoroutineScope by CoroutineScope(Dispatchers.Default) {
 
 val threadLocal = ThreadLocal<String?>() // declare thread-local variable
 
-class Context_and_Dispatchers {
+class ContextAndDispatchers {
 
     val print = printer()
 
     companion object {
         fun run() {
-            Context_and_Dispatchers().print.c { "********************" }
-            Context_and_Dispatchers().CoroutinesDispatcherAndThread()
-            Context_and_Dispatchers().dispatcherCompare()
-            Context_and_Dispatchers().debugCoroutinesAndThreads()
-            Context_and_Dispatchers().jumpingBetweenThreads()
-            Context_and_Dispatchers().contextJob()
-            Context_and_Dispatchers().childrenCoroutine()
-            Context_and_Dispatchers().parentalCoroutines()
-            Context_and_Dispatchers().nameCoroutinesForDebugging()
-            Context_and_Dispatchers().combiningContextElements()
-            Context_and_Dispatchers().startCoroutineScope()
-            Context_and_Dispatchers().threadLocalData()
+            ContextAndDispatchers().print.c { "********************" }
+            ContextAndDispatchers().coroutinesDispatcherAndThread()
+
+            println("******************************")
+            ContextAndDispatchers().dispatcherCompare()
+
+            println("******************************")
+            ContextAndDispatchers().debugCoroutinesAndThreads()
+
+            println("******************************")
+            ContextAndDispatchers().jumpingBetweenThreads()
+
+            println("******************************")
+            ContextAndDispatchers().contextJob()
+
+            println("******************************")
+            ContextAndDispatchers().childrenCoroutine()
+
+            println("******************************")
+            ContextAndDispatchers().parentalCoroutines()
+
+            println("******************************")
+            ContextAndDispatchers().nameCoroutinesForDebugging()
+
+            println("******************************")
+            ContextAndDispatchers().combiningContextElements()
+
+            println("******************************")
+            ContextAndDispatchers().startCoroutineScope()
+
+            println("******************************")
+            ContextAndDispatchers().threadLocalData()
         }
     }
 
-    private fun CoroutinesDispatcherAndThread() = runBlocking {
+    private fun coroutinesDispatcherAndThread() = runBlocking {
 
         /**
          * it inherits the context (and thus dispatcher) from the CoroutineScope it is being launched from.
