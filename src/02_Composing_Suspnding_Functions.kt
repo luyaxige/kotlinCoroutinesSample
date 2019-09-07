@@ -47,6 +47,11 @@ class ComposingSuspndingFunctions {
         println("Completed in $time ms")
     }
 
+    /**
+     * the async will return a Deffered, -- a light-weight non-blocking future
+     * that represents a promise to provide a result later
+     * use .await() function on a deffered value to get its eventually result
+     * */
     fun concurrentUseAsync() = runBlocking {
         val time = measureTimeMillis {
             val one = async { doSomethingUsefulOne() }
@@ -56,6 +61,10 @@ class ComposingSuspndingFunctions {
         println("Completed in $time ms")
     }
 
+    /**
+     * Optionally, async can be made lazy start
+     * by set start paramter to CoroutineStart.LAZY
+     * in this mode it only starts the coroutine when its result is required by await or start function is invoked*/
     fun lazyStartAsync() = runBlocking {
         val time = measureTimeMillis {
             val one = async(start = CoroutineStart.LAZY) { doSomethingUsefulOne() }
@@ -67,6 +76,11 @@ class ComposingSuspndingFunctions {
         println("Completed in $time ms")
     }
 
+    /**
+     * async style functions are not suspending functions, so they can be used from anywhere
+     * however their use always implies asynchrounous(here means concurrent) execution of their action with the invoking code
+     * but this style is not recommend, for there will be logic error between 'Structure Concurrency With Async'
+     * */
     // The result type of somethingUsefulOneAsync is Deferred<Int>
     private fun somethingUsefulOneAsync() = GlobalScope.async {
         doSomethingUsefulOne()
