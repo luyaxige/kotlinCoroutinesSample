@@ -4,7 +4,7 @@ import kotlin.reflect.KClass
 
 class Print(clazz: KClass<*>) {
 
-    private val timeTag = SimpleDateFormat("hh:MM:ss")
+    private val timeTag = SimpleDateFormat("hh:MM:ss.SSS")
     private val classTag: String = clazz.simpleName ?: "Unknown Class"
 
     /**
