@@ -37,6 +37,9 @@ class HelloWorld {
         }
     }
 
+    /**
+     * launch a basic coroutine and a thread
+     * */
     fun coroutineStart() {
 
         GlobalScope.launch {
@@ -135,6 +138,9 @@ class HelloWorld {
         print.t { "Coroutine scope is over" } // This line is not printed until the nested launch completes
     }
 
+    /**
+     * extract the coroutine task into suspending function
+     * */
     private fun extractfunctionRefactoring() = runBlocking {
         launch { doWorld() }
         print.t { "Hello," }

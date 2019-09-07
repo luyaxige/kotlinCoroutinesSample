@@ -9,14 +9,14 @@ fun main() {
 //    HelloWorld.run()
 
     /**
+     * Composing Suspending Functions
+     * */
+    ComposingSuspndingFunctions.run()
+
+    /**
      * Coroutines Context and Dispatchers
      * */
 //    ContextAndDispatchers.run()
-
-    /**
-     * Composing Suspending Functions
-     * */
-//    ComposingSuspndingFunctions.run()
 
     /**
      * Cancellation and Timeouts
@@ -26,5 +26,5 @@ fun main() {
     /**
      * Exception Handling and Supervision
      * */
-    ExceptionHandlingAndSupervision.run()
+//    ExceptionHandlingAndSupervision.run()
 }
